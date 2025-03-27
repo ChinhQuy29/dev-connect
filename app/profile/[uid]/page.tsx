@@ -1,9 +1,12 @@
+"use client";
+
 import React from 'react'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const ProfilePage = () => {
-    const { param } = useParams();
+    const router = useRouter();
     const { data: session, status } = useSession();
     if (status == "loading") {
         return (
@@ -21,6 +24,10 @@ const ProfilePage = () => {
         <div>
             <p>{session.user?.name}</p>
             <p>{session.user?.email}</p>
+            <button onClick={() => signOut()}>Logout</button>
+            <button onClick={() => {
+                router.push("/dashboard")
+            }}>Dashboard</button>
         </div>
     )
 }
