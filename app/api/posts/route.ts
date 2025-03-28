@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         });
         newPost.save();
 
-        return NextResponse.json({ newPost }, { status: 200 });
+        return NextResponse.json(newPost, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ error: `Server error: ${error}` }, { status: 500 });
@@ -42,17 +42,14 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
     try {
         await connectToDB();
-        const { postId } = await req.json();
-        if (!postId) {
-            return NextResponse.json({ error: "Missing postId" }, { status: 400 });
+
+        const posts = await Post.find();
+        if (!posts) {
+            return NextResponse.json({ error: "No posts found" }, { status: 400 });
         }
 
-        const foundPost = await Post.findById(postId);
-        if (!foundPost) {
-            return NextResponse.json({ error: "Post not found" }, { status: 400 });
-        }
+        return NextResponse.json({ posts }, { status: 200 });
 
-        return NextResponse.json(foundPost, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
